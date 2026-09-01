@@ -5,6 +5,8 @@ import com.javabank.exception.*;
 import com.javabank.model.*;
 import com.javabank.service.BankService;
 import com.javabank.util.IdGenerator;
+import com.javabank.web.dto.AccountDTO;
+import com.javabank.web.dto.TransactionDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * Main REST Controller for JavaBank Web Application.
- * Exposes account management, transactions, stream analytics, and deep-copy snapshots.
+ * Uses immutable DTO records to guarantee lightweight, recursion-free JSON payloads.
  */
 @RestController
 @RequestMapping("/api")
@@ -27,7 +29,7 @@ public class ApiController {
 
     private final BankService bankService;
     private final AnalyticsService analyticsService;
-    private final List<Account> snapshotRegistry = new CopyOnWriteArrayList<>();
+    private final List<AccountDTO> snapshotRegistry = new CopyOnWriteArrayList<>();
 
     public ApiController(BankService bankService, AnalyticsService analyticsService) {
         this.bankService = bankService;
@@ -44,7 +46,7 @@ public class ApiController {
             throw new IllegalArgumentException("User ID is required.");
         }
         User user = bankService.getUser(userId.trim());
-        List<Account> accounts = getUserAccounts(user.getUserId());
+        List<AccountDTO> accounts = getUserAccounts(user.getUserId());
 
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
@@ -78,17 +80,18 @@ public class ApiController {
     // 2. ACCOUNT MANAGEMENT
     // ==========================================
     @GetMapping("/accounts")
-    public ResponseEntity<List<Account>> getAccounts(@RequestParam String userId) throws Exception {
+    public ResponseEntity<List<AccountDTO>> getAccounts(@RequestParam String userId) throws Exception {
         return ResponseEntity.ok(getUserAccounts(userId));
     }
 
     @GetMapping("/accounts/{accountNumber}")
-    public ResponseEntity<Account> getAccount(@PathVariable String accountNumber) throws Exception {
-        return ResponseEntity.ok(bankService.findAccount(accountNumber));
+    public ResponseEntity<AccountDTO> getAccount(@PathVariable String accountNumber) throws Exception {
+        Account account = bankService.findAccount(accountNumber);
+        return ResponseEntity.ok(AccountDTO.from(account));
     }
 
     @PostMapping("/accounts")
-    public ResponseEntity<Account> createAccount(@RequestBody Map<String, Object> payload) throws Exception {
+    public ResponseEntity<AccountDTO> createAccount(@RequestBody Map<String, Object> payload) throws Exception {
         String userId = (String) payload.get("userId");
         String accountType = (String) payload.get("accountType");
         double initialBalance = payload.containsKey("initialBalance") 
@@ -101,7 +104,7 @@ public class ApiController {
         } else {
             account = bankService.createAccount(userId, accountType, initialBalance);
         }
-        return ResponseEntity.ok(account);
+        return ResponseEntity.ok(AccountDTO.from(account));
     }
 
     // ==========================================
@@ -157,7 +160,7 @@ public class ApiController {
     }
 
     @GetMapping("/transactions")
-    public ResponseEntity<List<Transaction>> getTransactions(
+    public ResponseEntity<List<TransactionDTO>> getTransactions(
             @RequestParam String accountNumber,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) Double minAmount,
@@ -177,7 +180,12 @@ public class ApiController {
         List<Transaction> transactions = bankService.getFilteredTransactions(
                 accountNumber, txType, minAmount, maxAmount, start, end
         );
-        return ResponseEntity.ok(transactions);
+
+        List<TransactionDTO> dtos = transactions.stream()
+                .map(TransactionDTO::from)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(dtos);
     }
 
     // ==========================================
@@ -185,7 +193,10 @@ public class ApiController {
     // ==========================================
     @GetMapping("/analytics")
     public ResponseEntity<Map<String, Object>> getAnalytics(@RequestParam String userId) throws Exception {
-        List<Account> accounts = getUserAccounts(userId);
+        List<Account> accounts = bankService.getAllAccounts().stream()
+                .filter(acc -> acc.getOwner().getUserId().equals(userId))
+                .collect(Collectors.toList());
+
         List<Transaction> allTransactions = new ArrayList<>();
         for (Account a : accounts) {
             allTransactions.addAll(bankService.getTransactionHistory(a.getAccountNumber()));
@@ -227,18 +238,19 @@ public class ApiController {
     // 5. ACCOUNT SNAPSHOTS (DEEP COPY DEMO)
     // ==========================================
     @PostMapping("/snapshots")
-    public ResponseEntity<Account> createSnapshot(@RequestBody Map<String, String> payload) throws Exception {
+    public ResponseEntity<AccountDTO> createSnapshot(@RequestBody Map<String, String> payload) throws Exception {
         String accountNumber = payload.get("accountNumber");
         if (accountNumber == null || accountNumber.isBlank()) {
             throw new IllegalArgumentException("Account number is required.");
         }
         Account snapshot = bankService.createAccountSnapshot(accountNumber);
-        snapshotRegistry.add(snapshot);
-        return ResponseEntity.ok(snapshot);
+        AccountDTO dto = AccountDTO.from(snapshot);
+        snapshotRegistry.add(dto);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/snapshots")
-    public ResponseEntity<List<Account>> getSnapshots() {
+    public ResponseEntity<List<AccountDTO>> getSnapshots() {
         return ResponseEntity.ok(snapshotRegistry);
     }
 
@@ -260,9 +272,10 @@ public class ApiController {
     }
 
     // Helper
-    private List<Account> getUserAccounts(String userId) throws Exception {
+    private List<AccountDTO> getUserAccounts(String userId) throws Exception {
         return bankService.getAllAccounts().stream()
                 .filter(acc -> acc.getOwner().getUserId().equals(userId))
+                .map(AccountDTO::from)
                 .collect(Collectors.toList());
     }
 }
