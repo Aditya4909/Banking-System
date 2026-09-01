@@ -1,5 +1,6 @@
 package com.javabank.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.javabank.exception.InsufficientBalanceException;
 import com.javabank.exception.InvalidAmountException;
 import com.javabank.util.IdGenerator;
@@ -15,6 +16,7 @@ import java.util.List;
  */
 public abstract class Account implements Copyable<Account>, Cloneable {
     private final String accountNumber;
+    @JsonIgnore
     private final User owner;
     protected double balance;
     private final List<Transaction> transactions;
@@ -63,6 +65,7 @@ public abstract class Account implements Copyable<Account>, Cloneable {
         return accountNumber;
     }
 
+    @JsonIgnore
     public User getOwner() {
         return owner;
     }

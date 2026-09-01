@@ -1,5 +1,7 @@
 package com.javabank.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +14,7 @@ public class User {
     private final String userId;
     private final String name;
     private final String email;
+    @JsonIgnore
     private final List<Account> accounts;
 
     public User(String userId, String name, String email) {
@@ -42,6 +45,7 @@ public class User {
         return email;
     }
 
+    @JsonIgnore
     public List<Account> getAccounts() {
         return Collections.unmodifiableList(accounts);
     }
