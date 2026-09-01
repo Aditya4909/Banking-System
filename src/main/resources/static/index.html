@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaBank - Cloud Banking Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- AUTHENTICATION SCREEN -->
+    <div id="auth-screen" class="auth-overlay">
+        <div class="auth-card glass-panel">
+            <div class="auth-header">
+                <div class="logo-icon"><i class="fa-solid fa-building-columns"></i></div>
+                <h2>JavaBank</h2>
+                <p>Enterprise Core Banking System</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form-box">
+                <div class="form-group">
+                    <label for="login-user-id">Customer Access ID</label>
+                    <div class="input-icon-wrap">
+                        <i class="fa-solid fa-id-card"></i>
+                        <input type="text" id="login-user-id" placeholder="e.g. CUST-1001" value="CUST-1001">
+                    </div>
+                    <small class="hint">Demo account pre-filled for quick access</small>
+                </div>
+                <button id="btn-login" class="btn btn-primary btn-block">
+                    <i class="fa-solid fa-right-to-bracket"></i> Sign In to Portal
+                </button>
+                <div class="auth-switch">
+                    <span>New to JavaBank?</span>
+                    <a href="#" id="switch-to-register">Create an Account</a>
+                </div>
+            </div>
+
+            <!-- Registration Form -->
+            <div id="register-form-box" class="hidden">
+                <div class="form-group">
+                    <label for="reg-name">Full Name</label>
+                    <div class="input-icon-wrap">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="reg-name" placeholder="e.g. Alice Smith">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email Address</label>
+                    <div class="input-icon-wrap">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="reg-email" placeholder="e.g. alice@example.com">
+                    </div>
+                </div>
+                <button id="btn-register" class="btn btn-primary btn-block">
+                    <i class="fa-solid fa-user-plus"></i> Register Profile
+                </button>
+                <div class="auth-switch">
+                    <span>Already have an ID?</span>
+                    <a href="#" id="switch-to-login">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APPLICATION LAYOUT -->
+    <div id="app-layout" class="app-container hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fa-solid fa-building-columns brand-icon"></i>
+                <div class="brand-text">
+                    <h3>JavaBank</h3>
+                    <span>Cloud Portal</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-item active" data-view="dashboard">
+                    <i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span>
+                </a>
+                <a href="#accounts" class="nav-item" data-view="accounts">
+                    <i class="fa-solid fa-wallet"></i> <span>Accounts</span>
+                </a>
+                <a href="#deposit" class="nav-item" data-view="deposit">
+                    <i class="fa-solid fa-circle-arrow-down"></i> <span>Deposit</span>
+                </a>
+                <a href="#withdraw" class="nav-item" data-view="withdraw">
+                    <i class="fa-solid fa-circle-arrow-up"></i> <span>Withdraw</span>
+                </a>
+                <a href="#transfer" class="nav-item" data-view="transfer">
+                    <i class="fa-solid fa-money-bill-transfer"></i> <span>Transfer Money</span>
+                </a>
+                <a href="#history" class="nav-item" data-view="history">
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span>Audit History</span>
+                </a>
+                <a href="#analytics" class="nav-item" data-view="analytics">
+                    <i class="fa-solid fa-chart-line"></i> <span>Analytics</span>
+                </a>
+                <a href="#snapshots" class="nav-item" data-view="snapshots">
+                    <i class="fa-solid fa-camera-retro"></i> <span>Snapshots</span>
+                </a>
+                <a href="#profile" class="nav-item" data-view="profile">
+                    <i class="fa-solid fa-user-shield"></i> <span>Profile & Statements</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-badge">
+                    <div class="user-avatar" id="sidebar-avatar">JD</div>
+                    <div class="user-info">
+                        <span id="sidebar-user-name">John Doe</span>
+                        <small id="sidebar-user-id">CUST-1001</small>
+                    </div>
+                </div>
+                <button id="btn-logout" class="btn-logout" title="Sign Out">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- VIEW 1: DASHBOARD -->
+            <section id="view-dashboard" class="content-view">
+                <div class="view-header">
+                    <div>
+                        <h1 id="welcome-title">Welcome back, John!</h1>
+                        <p class="subtitle">Here is your live financial snapshot and stream summary.</p>
+                    </div>
+                    <div class="account-selector-wrap">
+                        <label for="dash-account-select"><i class="fa-solid fa-credit-card"></i> Account:</label>
+                        <select id="dash-account-select" class="select-custom"></select>
+                    </div>
+                </div>
+
+                <!-- Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="metric-card glass-panel highlight-card">
+                        <div class="metric-icon"><i class="fa-solid fa-vault"></i></div>
+                        <div class="metric-data">
+                            <span class="metric-label">CURRENT BALANCE</span>
+                            <h2 class="metric-value" id="metric-balance">$0.00</h2>
+                        </div>
+                    </div>
+                    <div class="metric-card glass-panel">
+                        <div class="metric-icon type-icon"><i class="fa-solid fa-tag"></i></div>
+                        <div class="metric-data">
+                            <span class="metric-label">ACCOUNT CLASS</span>
+                            <h2 class="metric-value" id="metric-type">Savings</h2>
+                        </div>
+                    </div>
+                    <div class="metric-card glass-panel">
+                        <div class="metric-icon status-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="metric-data">
+                            <span class="metric-label">ACCOUNT STATUS</span>
+                            <h2 class="metric-value" id="metric-status">ACTIVE</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metrics-grid secondary-metrics">
+                    <div class="metric-card glass-panel">
+                        <span class="metric-label"><i class="fa-solid fa-arrow-trend-up text-success"></i> TOTAL DEPOSITS</span>
+                        <h3 class="metric-value text-success" id="metric-total-deposits">$0.00</h3>
+                    </div>
+                    <div class="metric-card glass-panel">
+                        <span class="metric-label"><i class="fa-solid fa-arrow-trend-down text-danger"></i> TOTAL WITHDRAWALS</span>
+                        <h3 class="metric-value text-danger" id="metric-total-withdrawals">$0.00</h3>
+                    </div>
+                    <div class="metric-card glass-panel">
+                        <span class="metric-label"><i class="fa-solid fa-shuffle text-primary"></i> TOTAL TRANSFERS</span>
+                        <h3 class="metric-value text-primary" id="metric-total-transfers">$0.00</h3>
+                    </div>
+                </div>
+
+                <!-- Activity & Quick Actions -->
+                <div class="dashboard-split">
+                    <div class="glass-panel panel-card flex-2">
+                        <div class="panel-header">
+                            <h3><i class="fa-solid fa-list-check"></i> Recent Activity (Last 5 Logs)</h3>
+                            <a href="#history" class="view-all-link">View Full Ledger &rarr;</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table" id="recent-transactions-table">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="4" class="text-center">No transactions recorded.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel panel-card flex-1">
+                        <div class="panel-header">
+                            <h3><i class="fa-solid fa-bolt"></i> Quick Access</h3>
+                        </div>
+                        <div class="quick-actions-grid">
+                            <button class="btn btn-action" onclick="navigateTo('deposit')">
+                                <i class="fa-solid fa-circle-arrow-down text-success"></i>
+                                <span>Deposit</span>
+                            </button>
+                            <button class="btn btn-action" onclick="navigateTo('withdraw')">
+                                <i class="fa-solid fa-circle-arrow-up text-danger"></i>
+                                <span>Withdraw</span>
+                            </button>
+                            <button class="btn btn-action" onclick="navigateTo('transfer')">
+                                <i class="fa-solid fa-money-bill-transfer text-primary"></i>
+                                <span>Transfer</span>
+                            </button>
+                            <button class="btn btn-action" onclick="navigateTo('analytics')">
+                                <i class="fa-solid fa-chart-line text-warning"></i>
+                                <span>Analytics</span>
+                            </button>
+                            <button class="btn btn-action" onclick="navigateTo('snapshots')">
+                                <i class="fa-solid fa-camera-retro text-purple"></i>
+                                <span>Snapshot</span>
+                            </button>
+                            <button class="btn btn-action" onclick="navigateTo('accounts')">
+                                <i class="fa-solid fa-plus-circle text-info"></i>
+                                <span>New Account</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 2: ACCOUNTS OVERVIEW -->
+            <section id="view-accounts" class="content-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>Bank Accounts Registry</h1>
+                        <p class="subtitle">Manage savings, checking, and current accounts.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('modal-open-account')">
+                        <i class="fa-solid fa-plus"></i> Open New Account
+                    </button>
+                </div>
+
+                <div class="glass-panel panel-card">
+                    <div class="table-responsive">
+                        <table class="data-table" id="accounts-table">
+                            <thead>
+                                <tr>
+                                    <th>Account Number</th>
+                                    <th>Class</th>
+                                    <th>Current Balance</th>
+                                    <th>Status</th>
+                                    <th>Interest / Overdraft</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="accounts-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 3: DEPOSIT -->
+            <section id="view-deposit" class="content-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>Deposit Cash</h1>
+                        <p class="subtitle">Credit funds directly into your verified bank account.</p>
+                    </div>
+                </div>
+                <div class="form-container-card glass-panel">
+                    <form id="form-deposit">
+                        <div class="form-group">
+                            <label for="deposit-account">Target Bank Account</label>
+                            <select id="deposit-account" class="select-custom" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="deposit-amount">Deposit Amount ($ USD)</label>
+                            <input type="number" step="0.01" id="deposit-amount" placeholder="0.00" min="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="deposit-desc">Transaction Memo / Reference</label>
+                            <input type="text" id="deposit-desc" placeholder="e.g. Salary Credit, Direct Deposit">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-circle-arrow-down"></i> Submit Deposit
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- VIEW 4: WITHDRAW -->
+            <section id="view-withdraw" class="content-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>Cash Withdrawal</h1>
+                        <p class="subtitle">Debit funds (enforces non-negative checks and overdraft rules).</p>
+                    </div>
+                </div>
+                <div class="form-container-card glass-panel">
+                    <form id="form-withdraw">
+                        <div class="form-group">
+                            <label for="withdraw-account">Source Bank Account</label>
+                            <select id="withdraw-account" class="select-custom" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="withdraw-amount">Withdrawal Amount ($ USD)</label>
+                            <input type="number" step="0.01" id="withdraw-amount" placeholder="0.00" min="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="withdraw-desc">Memo / Purpose</label>
+                            <input type="text" id="withdraw-desc" placeholder="e.g. ATM Cash, Rent Payment">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-circle-arrow-up"></i> Submit Withdrawal
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- VIEW 5: TRANSFER -->
+            <section id="view-transfer" class="content-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>Send Money (Transfer)</h1>
+                        <p class="subtitle">Inter-account instant transactional settlement.</p>
+                    </div>
+                </div>
+                <div class="form-container-card glass-panel">
+                    <form id="form-transfer">
+                        <div class="form-group">
+                            <label for="transfer-source">From Account</label>
+                            <select id="transfer-source" class="select-custom" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="transfer-dest">Destination Account Number</label>
+                            <input type="text" id="transfer-dest" placeholder="e.g. ACC-1002" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="transfer-amount">Transfer Amount ($ USD)</label>
+                            <input type="number" step="0.01" id="transfer-amount" placeholder="0.00" min="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="transfer-desc">Transfer Description</label>
+                            <input type="text" id="transfer-desc" placeholder="e.g. Invoice Payment, Split Bill">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-money-bill-transfer"></i> Authorize Transfer
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- VIEW 6: AUDIT HISTORY -->
+            <section id="view-history" class="content-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>Transaction Audit History</h1>
+                        <p class="subtitle">Multi-criteria filtering powered by Java Stream pipelines.</p>
+                    </div>
+                </div>
+
+                <!-- Filters Box -->
+                <div class="glass-panel panel-card filters-panel">
+                    <div class="filters-grid">
+                        <div class="form-group">
+                            <label for="filter-account">Account</label>
+                            <select id="filter-account" class="select-custom"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-type">Type</label>
+                            <select id="filter-type" class="select-custom">
+                                <option value="ALL">ALL TYPES</option>
+                                <option value="DEPOSIT">DEPOSIT</option>
+                                <option value="WITHDRAWAL">WITHDRAWAL</option>
+                                <option value="TRANSFER">TRANSFER</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-min">Min Amount ($)</label>
+                            <input type="number" id="filter-min" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-max">Max Amount ($)</label>
+                            <input type="number" id="filter-max" placeholder="Unlimited">
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-start-date">Start Date</label>
+                            <input type="date" id="filter-start-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-end-date">End Date</label>
+                            <input type="date" id="filter-end-date">
+                        </div>
+                    </div>
+                    <div class="filters-actions">
+                        <button id="btn-apply-filters" class="btn btn-primary">
+                            <i class="fa-solid fa-filter"></i> Apply Filters
+                        </button>
+                        <button id="btn-clear-filters" class="btn btn-secondary">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </button>
+                    </div>
+                </div>
+
+                <div class="glass-panel panel-card">
+                    <div class="table-responsive">
+                        <table class="data-table" id="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Tx Reference</th>
+                                    <th>Date & Time</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Source</th>
+                                    <th>Destination</th>
+                                    <th>Status</th>
+                                    <th>Memo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 7: ANALYTICS -->
+            <section id="view-analytics" class="content-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>Financial Statistics & Stream Analytics</h1>
+                        <p class="subtitle">Stream API aggregations across all user accounts.</p>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card glass-panel">
+                        <span class="metric-label">AVERAGE TRANSACTION</span>
+                        <h2 class="metric-value" id="analytics-avg-tx">$0.00</h2>
+                    </div>
+                    <div class="metric-card glass-panel">
+                        <span class="metric-label">LARGEST TRANSACTION</span>
+                        <h2 class="metric-value" id="analytics-max-tx">$0.00</h2>
+                    </div>
+                    <div class="metric-card glass-panel">
+                        <span class="metric-label">TOTAL TRANSACTION COUNT</span>
+                        <h2 class="metric-value" id="analytics-count-tx">0</h2>
+                    </div>
+                </div>
+
+                <!-- Chart Visualizations -->
+                <div class="charts-grid">
+                    <div class="chart-card glass-panel">
+                        <h3><i class="fa-solid fa-chart-pie"></i> Transaction Split by Type</h3>
+                        <div class="chart-container">
+                            <canvas id="chart-type-split"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card glass-panel">
+                        <h3><i class="fa-solid fa-chart-column"></i> Monthly Transaction Activity</h3>
+                        <div class="chart-container">
+                            <canvas id="chart-monthly"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card glass-panel full-width-chart">
+                        <h3><i class="fa-solid fa-scale-balanced"></i> Cashflow Comparison (Deposits vs. Withdrawals)</h3>
+                        <div class="chart-container">
+                            <canvas id="chart-comparison"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 8: SNAPSHOTS -->
+            <section id="view-snapshots" class="content-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>Temporal Account Snapshots</h1>
+                        <p class="subtitle">Deep-copy independence verification: captures point-in-time states.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel panel-card snapshot-action-panel">
+                    <div class="snapshot-controls">
+                        <label for="snapshot-account-picker">Select Account to Snapshot:</label>
+                        <select id="snapshot-account-picker" class="select-custom"></select>
+                        <button id="btn-create-snapshot" class="btn btn-primary">
+                            <i class="fa-solid fa-camera"></i> Create Snapshot
+                        </button>
+                    </div>
+                    <p class="hint-box">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Snapshots are completely independent deep copies. Modifying active account balances or executing withdrawals will NOT affect previously generated snapshots.
+                    </p>
+                </div>
+
+                <div class="glass-panel panel-card">
+                    <h3><i class="fa-solid fa-clock"></i> Captured Snapshot Registry</h3>
+                    <div class="table-responsive">
+                        <table class="data-table" id="snapshots-table">
+                            <thead>
+                                <tr>
+                                    <th>Snapshot ID</th>
+                                    <th>Account No</th>
+                                    <th>Snapshot Balance</th>
+                                    <th>Class</th>
+                                    <th>Status</th>
+                                    <th>History Entries</th>
+                                </tr>
+                            </thead>
+                            <tbody id="snapshots-table-body">
+                                <tr><td colspan="6" class="text-center">No snapshots generated yet.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 9: PROFILE & STATEMENTS -->
+            <section id="view-profile" class="content-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>Client Profile & Account Statements</h1>
+                        <p class="subtitle">Identity credentials and formatted statement generation.</p>
+                    </div>
+                </div>
+
+                <div class="profile-grid">
+                    <div class="glass-panel panel-card profile-details-card">
+                        <h3><i class="fa-solid fa-user-circle"></i> Profile Credentials</h3>
+                        <div class="profile-field">
+                            <span class="field-label">Customer Name:</span>
+                            <span class="field-value" id="profile-name">John Doe</span>
+                        </div>
+                        <div class="profile-field">
+                            <span class="field-label">Email Address:</span>
+                            <span class="field-value" id="profile-email">john.doe@example.com</span>
+                        </div>
+                        <div class="profile-field">
+                            <span class="field-label">Access ID:</span>
+                            <span class="field-value badge" id="profile-id">CUST-1001</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel panel-card statement-generator-card">
+                        <h3><i class="fa-solid fa-file-invoice-dollar"></i> Generate Account Statement</h3>
+                        <div class="form-group">
+                            <label for="statement-account-select">Select Account:</label>
+                            <select id="statement-account-select" class="select-custom"></select>
+                        </div>
+                        <div class="statement-actions">
+                            <button id="btn-generate-statement" class="btn btn-primary">
+                                <i class="fa-solid fa-file-lines"></i> View Statement
+                            </button>
+                            <button id="btn-vault-summary" class="btn btn-secondary">
+                                <i class="fa-solid fa-vault"></i> System Vault Summary
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel panel-card statement-output-card" id="statement-output-box">
+                    <h3><i class="fa-solid fa-terminal"></i> Statement Output</h3>
+                    <pre id="statement-text">Select an account and click "View Statement" to render.</pre>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL: OPEN NEW ACCOUNT -->
+    <div id="modal-open-account" class="modal-overlay hidden">
+        <div class="modal-card glass-panel">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-plus-circle"></i> Open New Bank Account</h3>
+                <button class="btn-close" onclick="closeModal('modal-open-account')">&times;</button>
+            </div>
+            <form id="form-open-account">
+                <div class="form-group">
+                    <label for="new-account-type">Account Class</label>
+                    <select id="new-account-type" class="select-custom" required>
+                        <option value="Savings">Savings Account (with Interest Rate)</option>
+                        <option value="Current">Current Account (with Overdraft Limit)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="new-account-deposit">Initial Deposit ($ USD)</label>
+                    <input type="number" step="0.01" id="new-account-deposit" placeholder="100.00" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-account-extra" id="lbl-new-account-extra">Interest Rate (e.g. 0.03 for 3%)</label>
+                    <input type="number" step="0.001" id="new-account-extra" placeholder="Default applied if empty">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-open-account')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: javabank-cloud
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: Dockerfile
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: 8080

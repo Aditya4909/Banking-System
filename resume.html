@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aditya Singh - Resume</title>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --text-color: #1f2937;
+            --light-text: #4b5563;
+            --border-color: #d1d5db;
+            --link-color: #2563eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-color);
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            font-size: 13.5px;
+        }
+
+        .resume-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        /* Header styling */
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0 0 4px 0;
+            color: var(--primary-color);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--light-text);
+            margin: 0 0 8px 0;
+        }
+
+        .contact-info {
+            font-size: 12px;
+            color: var(--light-text);
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .contact-info a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        .separator {
+            color: var(--border-color);
+        }
+
+        /* Section styling */
+        section {
+            margin-bottom: 14px;
+        }
+
+        h2 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-color);
+            border-bottom: 1.5px solid var(--primary-color);
+            margin: 0 0 8px 0;
+            padding-bottom: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Summary */
+        .summary-text {
+            margin: 0;
+            text-align: justify;
+        }
+
+        /* Education */
+        .education-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 2px;
+        }
+
+        .edu-degree {
+            font-weight: 700;
+        }
+
+        .edu-date {
+            font-weight: 600;
+            color: var(--light-text);
+        }
+
+        .edu-details {
+            font-size: 12.5px;
+            color: var(--light-text);
+        }
+
+        /* Skills */
+        .skills-grid {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .skills-grid li {
+            margin-bottom: 4px;
+            text-align: justify;
+        }
+
+        .skills-category {
+            font-weight: 700;
+            display: inline-block;
+            min-width: 170px;
+        }
+
+        /* Projects */
+        .project-entry {
+            margin-bottom: 10px;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 3px;
+        }
+
+        .project-title {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .project-title a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .project-title a:hover {
+            text-decoration: underline;
+        }
+
+        .project-tech {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--light-text);
+            font-style: italic;
+        }
+
+        .project-bullets {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .project-bullets li {
+            margin-bottom: 3px;
+            text-align: justify;
+        }
+
+        /* Achievements & Certifications */
+        .list-items {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .list-items li {
+            margin-bottom: 3px;
+        }
+
+        .cert-list {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 12px;
+        }
+
+        .cert-item::before {
+            content: "•";
+            margin-right: 6px;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .cert-item {
+            font-size: 12.5px;
+        }
+
+        /* Print formatting */
+        @media print {
+            body {
+                font-size: 12px;
+                line-height: 1.35;
+            }
+
+            .resume-container {
+                padding: 15px;
+            }
+
+            h2 {
+                margin-top: 10px;
+                margin-bottom: 6px;
+            }
+
+            section {
+                margin-bottom: 10px;
+            }
+
+            .project-entry {
+                margin-bottom: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <header>
+            <h1>Aditya Singh</h1>
+            <div class="title">Software Engineering Intern | Java Backend Developer</div>
+            <div class="contact-info">
+                <span>Ghaziabad, Uttar Pradesh, India</span>
+                <span class="separator">|</span>
+                <span>+91-9837736408</span>
+                <span class="separator">|</span>
+                <a href="mailto:adi0405singh@gmail.com">adi0405singh@gmail.com</a>
+                <span class="separator">|</span>
+                <a href="https://linkedin.com/in/aditya-singh-bb545832b" target="_blank">linkedin.com/in/aditya-singh-bb545832b</a>
+                <span class="separator">|</span>
+                <a href="https://github.com/Aditya4909" target="_blank">github.com/Aditya4909</a>
+            </div>
+        </header>
+
+        <section id="summary">
+            <h2>Summary</h2>
+            <p class="summary-text">
+                Computer Science student with strong foundations in Data Structures, Algorithms, and Object-Oriented Design. Experienced in Java backend engineering, utilizing modern Java features (Functional Interfaces, Stream API pipelines, Concurrency, and Generics) to develop structured architectures, generic components, and reliable, high-performance data layers. Currently learning Spring Boot and applying the core Spring Framework ecosystem (IoC, Dependency Injection, Annotations, Spring MVC) for modern web backend applications.
+            </p>
+        </section>
+
+        <section id="education">
+            <h2>Education</h2>
+            <div class="education-entry">
+                <span class="edu-degree">B.Tech in Computer Science and Engineering</span>
+                <span class="edu-date">2023 &ndash; 2027 (Expected)</span>
+            </div>
+            <div class="education-entry">
+                <span class="edu-details">KIET Group of Institutions, Ghaziabad, Delhi-NCR, India</span>
+                <span class="edu-details">CGPA: 7.00 / 10.0</span>
+            </div>
+        </section>
+
+        <section id="skills">
+            <h2>Technical Skills</h2>
+            <ul class="skills-grid">
+                <li><span class="skills-category">Advanced Java:</span>Java Stream Pipelines, Functional Interfaces (Function, Predicate), Lambda Expressions, Generics, OOP Design, Multithreading & Concurrency (ConcurrentHashMap), Exception Handling, File I/O</li>
+                <li><span class="skills-category">Frameworks:</span>Spring Framework (Core, IoC, DI, MVC, Annotations), Spring Boot (Learning), Hibernate / JPA</li>
+                <li><span class="skills-category">DSA & Languages:</span>Data Structures & Algorithms (200+ solved problems on LeetCode), Java 8+, C++, Python, JavaScript (ES6+)</li>
+                <li><span class="skills-category">Web & Databases:</span>SQL (MySQL/PostgreSQL), Node.js, Express, MongoDB, RESTful API design, HTML5, CSS3, React.js</li>
+                <li><span class="skills-category">Tools & Cloud:</span>Git, GitHub, Maven, JUnit 5 (Unit Testing), VS Code, IntelliJ IDEA, AWS (Cloud Practitioner), Oracle Cloud</li>
+            </ul>
+        </section>
+
+        <section id="projects">
+            <h2>Projects</h2>
+            
+            <div class="project-entry">
+                <div class="project-header">
+                    <span class="project-title"><a href="https://github.com/Aditya4909/Banking-System" target="_blank">JavaBank &ndash; Desktop Retail Banking Application</a></span>
+                    <span class="project-tech">Java 17, JavaFX, Maven, JUnit 5</span>
+                </div>
+                <ul class="project-bullets">
+                    <li>Developed a secure desktop banking system utilizing a clean <strong>4-layer architecture</strong> (presentation, service, repository, analytics) to separate concerns and improve maintainability.</li>
+                    <li>Designed a generic, thread-safe in-memory Repository pattern (<code>InMemoryRepository&lt;T, ID&gt;</code>) leveraging <strong>Functional Interfaces</strong> (<code>Function&lt;T, ID&gt;</code>, <code>Predicate&lt;T&gt;</code>) to allow dynamic ID extraction and generic data queries via lambda filters.</li>
+                    <li>Engineered custom checked exception handling with try-with-resources CSV persistence and registered a <strong>JVM shutdown hook</strong> to automatically serialize cached map configurations to files on sudden exit.</li>
+                    <li>Implemented optimized <strong>Java Stream pipelines</strong> utilizing primitive streams (<code>mapToDouble().sum()</code>, <code>average()</code>) to eliminate autoboxing overhead, and custom collectors (<code>groupingBy</code>, <code>counting</code>) to drive analytics dashboards.</li>
+                </ul>
+            </div>
+
+            <div class="project-entry">
+                <div class="project-header">
+                    <span class="project-title"><a href="https://github.com/Aditya4909/Real-Time-Public-Transport-Tracking-System" target="_blank">Real-Time Bus Tracking & Management System</a></span>
+                    <span class="project-tech">Node.js, Express, MongoDB, Socket.io, React.js (Leaflet, Recharts)</span>
+                </div>
+                <ul class="project-bullets">
+                    <li>Engineered a real-time tracking application featuring secure role-based portals for transit operators, commuters, and system administrators.</li>
+                    <li>Integrated <strong>Socket.io</strong> to push live geographical locations, estimated arrival times (ETA), and bus crowd levels to active clients with low latency.</li>
+                    <li>Architected an enterprise-style 19-endpoint REST API using Node.js/Express, incorporating JWT and bcrypt-based authorization, ticket generation workflows, and MongoDB schemas.</li>
+                </ul>
+            </div>
+
+            <div class="project-entry">
+                <div class="project-header">
+                    <span class="project-title"><a href="https://github.com/Aditya4909/Skincare-project" target="_blank">SkinSavvy &ndash; Skincare Intelligence & Recommendation Platform</a></span>
+                    <span class="project-tech">React.js, Node.js, Express, Local TF-IDF Engine</span>
+                </div>
+                <ul class="project-bullets">
+                    <li>Built an intelligent full-stack recommendations system implementing a local, zero-external-API <strong>RAG chatbot</strong> using TF-IDF vectorization and cosine similarity across 113 product documents.</li>
+                    <li>Developed a conflict-detection engine handling ingredient incompatibilities (e.g., AHAs + Retinol) and matching user condition risk profiles (acne, eczema) against product formulas.</li>
+                    <li>Optimized search indexing routines to construct TF-IDF indexes within ~22ms at server startup, supporting instantaneous chatbot response times.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="achievements">
+            <h2>Achievements</h2>
+            <ul class="list-items">
+                <li><strong>Smart India Hackathon (SIH) Finalist:</strong> Led a developer team through problem definition, system architecture design, and final prototype presentation.</li>
+            </ul>
+        </section>
+
+        <section id="certifications">
+            <h2>Certifications</h2>
+            <ul class="cert-list">
+                <li class="cert-item">AWS Certified Cloud Practitioner</li>
+                <li class="cert-item">Oracle Cloud Infrastructure Certified AI Foundations Associate</li>
+                <li class="cert-item">Palo Alto Networks Cybersecurity Foundation Course</li>
+            </ul>
+        </section>
+    </div>
+</body>
+</html>

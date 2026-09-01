@@ -1,27 +1,51 @@
-# JavaBank
+# JavaBank - Enterprise Core Banking System
 
 [![Java Version](https://img.shields.io/badge/Java-17%2B-orange.svg)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.1-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![JavaFX](https://img.shields.io/badge/JavaFX-17-blue.svg)](https://openjfx.io/)
 [![JUnit 5](https://img.shields.io/badge/JUnit-5-red.svg)](https://junit.org/junit5/)
-[![Build Tool](https://img.shields.io/badge/Maven-3.8%2B-green.svg)](https://maven.apache.org/)
+[![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED.svg)](https://www.docker.com/)
+[![Render](https://img.shields.io/badge/Deploy_to-Render-46E3B7.svg)](https://render.com/)
 
-JavaBank is a professional, secure desktop retail banking application built from the ground up using **Core Java 17** and **JavaFX**. It features a robust, multi-layered architecture completely decoupled from external frameworks or database engines, demonstrating textbook implementations of advanced object-oriented programming, generic repositories, custom checked exceptions, functional interfaces, primitive mapping streams, and transactional commands.
+JavaBank is an enterprise-grade core retail banking system built with **Core Java 17**, **Spring Boot 3 REST APIs**, a **Dark Glassmorphism Single-Page Web Dashboard**, and a **JavaFX Desktop GUI**. It features a robust multi-layered architecture decoupled from external database engines, demonstrating textbook implementations of advanced object-oriented design, generic repositories, custom checked exception boundaries, functional interfaces, primitive mapping streams, deep-copy cyclic snapshots, and cloud containerization.
+
+---
+
+## 🌐 Live Cloud Web Deployment (Render / Railway)
+
+JavaBank is pre-configured with a multi-stage **`Dockerfile`** and a **`render.yaml`** blueprint for instant, free 1-click cloud deployment on [Render.com](https://render.com).
+
+### 🚀 Deploying to Render in 3 Steps:
+1. **Create an account** on [Render.com](https://render.com) and log in.
+2. Click **New +** ➔ **Web Service** ➔ **Connect your GitHub repository** (`Aditya4909/Banking-System`).
+3. Set the following build options:
+   * **Environment**: `Docker` (or select `Java`)
+   * **Branch**: `main`
+   * **Plan**: `Free`
+4. Click **Deploy Web Service**! Render will build the container and provide you with a live HTTPS link (e.g. `https://javabank-cloud.onrender.com`).
 
 ---
 
 ## 🏛️ Architectural Overview
 
-JavaBank is built around a strict separation of concerns, ensuring high maintainability and testability:
+JavaBank is built around strict separation of concerns, supporting dual presentation layers (Web Single-Page Application & Desktop JavaFX Client) powered by the same underlying service engine:
 
 ```
-[ Presentation Layer (com.javabank.ui) ]
-  ├── BankingApp.java (JavaFX Stage, VBox sidebar, GridPanes, charts)
-  └── styles.css (Modern dark-slate interface elements, layout cards)
-        │
-        ▼ (Calls facade APIs, intercepts & displays exceptions)
+[ Web Browser Client (Mobile/Desktop) ]       [ JavaFX Desktop Client ]
+  ├── Single-Page Application (SPA)             └── BankingApp.java (Stage / Controls)
+  ├── Dark Glassmorphism Theme (styles.css)
+  └── Interactive Chart.js Visualizations
+        │                                             │
+        ▼ (JSON REST Requests over HTTPS)             │
+[ Spring Boot REST API Layer (com.javabank.web) ]     │
+  ├── ApiController.java (REST Endpoints)             │
+  ├── GlobalExceptionHandler.java (Domain errors)     │
+  └── WebConfig (Static Asset Routing)                │
+        │                                             │
+        ▼                                             ▼
 [ Business Service Layer (com.javabank.service) ]
   ├── BankService.java / BankServiceImpl.java (Coordinates core actions)
-  └── Exception Boundaries (Converts exceptions to UI alerts)
+  └── Exception Boundaries (Enforces domain invariants)
         │
         ├───────────────────────────────┐
         ▼                               ▼
@@ -35,144 +59,77 @@ JavaBank is built around a strict separation of concerns, ensuring high maintain
 
 ## 🚀 Core Features
 
-1. **User Authentication & Profiles**: Register new customers with customized identity keys or login securely using existing credentials.
-2. **Interactive Financial Dashboard**: Features summary cards, a quick-action grid, a list of the 5 most recent transactions, and an account drop-down selector that refreshes all calculations on the fly.
-3. **Transaction Forms**: Perform real-time deposits, cash withdrawals, and inter-account transfers. Rejects transactions matching invalid bounds (e.g. transfers to oneself, negative deposits).
-4. **Audit History Logs**: Custom-filterable ledger records table supporting transaction type filters, minimum/maximum amount thresholds, and DatePicker ranges.
-5. **Stream-based Analytics**: Interactive charts (assets split PieChart, monthly summaries BarChart, and comparative cashflow BarChart) populated via optimized Stream pipelines.
-6. **Temporal Account Snapshots**: Generates true deep-copied, detached historical records of bank accounts at a specific point in time to verify state independence.
-7. **Write-Through File Persistence**: Serializes data to local CSV databases. Features corruption recovery (skips corrupted rows and logs warnings) and registers a JVM shutdown hook to commit caches upon program exit.
+1. **Dual Client Architecture**: Accessible either as a **Cloud Web Application** in any browser (mobile or desktop) or as a native **JavaFX Desktop Client**.
+2. **User Authentication & Profiles**: Register new customers with customized identity keys or login securely using existing credentials (`CUST-1001`).
+3. **Interactive Financial Dashboard**: Summary cards, quick-action grid, recent transactions ledger, and account selector dropdown refreshing calculations in real time.
+4. **Transaction Processing**: Real-time cash deposits, cash withdrawals (enforcing positive bounds and overdraft ceilings), and inter-account transfers.
+5. **Stream-based Audit History**: Ledger records supporting transaction type filters, minimum/maximum amount thresholds, and date ranges.
+6. **Financial Analytics & Interactive Charts**: Donut charts for transaction types, monthly volume bar charts, and cashflow comparison charts powered by Java Stream pipelines and Chart.js.
+7. **Temporal Account Snapshots**: Generates true deep-copied, detached historical records of bank accounts at a specific point in time to verify state independence.
+8. **Write-Through File Persistence**: Serializes data to local CSV databases with corruption recovery and JVM shutdown hooks.
 
 ---
 
-## 🛠️ Tech Stack & Dependencies
+## 🔌 REST API Endpoints
 
-* **Core Platform**: Java 17+ (JDK 26 support included)
-* **GUI Toolkit**: JavaFX 17 (Controls, Graphics, FXML)
-* **Testing Library**: JUnit 5 (Jupyter)
-* **Build System**: Apache Maven 3.8+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/auth/login` | Authenticate customer via User ID (e.g. `CUST-1001`) |
+| `POST` | `/api/auth/register` | Create a new user profile |
+| `GET` | `/api/accounts?userId={id}` | Retrieve all accounts owned by user |
+| `POST` | `/api/accounts` | Open a new Savings or Current account |
+| `POST` | `/api/transactions/deposit` | Credit cash to an account |
+| `POST` | `/api/transactions/withdraw` | Debit cash with overdraft validation |
+| `POST` | `/api/transactions/transfer` | Transfer funds between two accounts |
+| `GET` | `/api/transactions` | Query transactions with filters (`type`, `minAmount`, `maxAmount`, `startDate`, `endDate`) |
+| `GET` | `/api/analytics?userId={id}` | Aggregate stream metrics and monthly chart datasets |
+| `POST` | `/api/snapshots` | Capture independent deep-copy account snapshot |
+| `GET` | `/api/snapshots` | Retrieve all historical snapshots |
+| `GET` | `/api/reports/statement` | Format and render text account statement |
+| `GET` | `/api/reports/vault` | System vault reserve summary |
+
+---
+
+## ⚙️ How to Build and Run Locally
+
+### Prerequisites
+* **Java Development Kit (JDK) 17** or higher.
+* **Apache Maven 3.8+** (or use the included `./mvnw.cmd` wrapper).
+
+### 1. Running the Web Application (Recommended)
+To run the Spring Boot Web application and access the web dashboard:
+```powershell
+cmd /c mvnw.cmd spring-boot:run
+```
+Once booted, open your browser and visit:
+👉 **`http://localhost:8080`**
+
+### 2. Running the JavaFX Desktop Client
+To run the standalone desktop GUI window:
+```powershell
+cmd /c mvnw.cmd javafx:run
+```
+*(Or double-click the included `run.bat` file in Windows Explorer)*
+
+### 3. Running Unit Tests
+To execute all 12 JUnit 5 test cases:
+```powershell
+cmd /c mvnw.cmd test
+```
+
+### 4. Running via Docker Container
+```bash
+docker build -t javabank:latest .
+docker run -p 8080:8080 javabank:latest
+```
 
 ---
 
 ## 💎 Core Java & OOP Concepts Demonstrated
 
-### 1. Object-Oriented Design (OOP)
-* **Abstraction**: Enforced via abstract class `Account`, which isolates core state variables and defines abstract operations (like `withdraw()`) overridden by concrete implementations.
-* **Encapsulation**: Fields are private and final where applicable. State changes are directed through strict validation methods (e.g. balance adjustments).
-* **Inheritance & Polymorphism**: `SavingsAccount` (prevents negative balances) and `CurrentAccount` (enforces configurable overdraft limits) extend `Account` to override withdrawals polymorphically.
-* **Method Overloading**: Overloaded account factories (custom limits vs default parameters) and transaction methods.
-
-### 2. Generics & Collections
-* **Generic Repository**: Declares `Repository<T, ID>` defining generic CRUD contracts, implemented by the base `InMemoryRepository<T, ID>` class.
-* **Collections Mapping**: Uses `ConcurrentHashMap` in generic memory repositories for thread-safe $O(1)$ key-based lookups, and `ArrayList` for transaction ledgers where order of insertion is critical.
-
-### 3. Exception Handling
-* **Checked Exceptions**: Custom checked boundary classes (`BankException`, `InsufficientBalanceException`, `AccountNotFoundException`, etc.) propagate from core layers. The presentation layer catches them to display error alerts rather than crashing.
-* **Resource Management**: Employs **try-with-resources** blocks for all file readers and writers to prevent memory leaks and locked file descriptors.
-
-### 4. Functional Programming & Streams
-* **Lambda Expressions**: Implements custom predicates like `TransactionFilter` and operations like `TransactionAction` via clean anonymous closures.
-* **Stream API & Primitives**: Optimizes mathematical sum aggregates (deposits, withdrawals, transfers) using primitive mapping streams (`mapToDouble().sum()`) to eliminate autoboxing overhead.
-* **Comparators**: Chronologically sorts and limits transaction arrays (`sorted()`, `limit()`) for tables.
-
-### 5. Advanced Cloning & Cyclic Graphs
-* **Deep Copying**: Implements custom **Copy Constructors** rather than relying on flawed `Cloneable` / `Object.clone()` setups.
-* **Cyclic Re-binding**: Avoids copy loop cycles in `User.deepCopy()` by passing the new user reference (`account.copy(newOwner)`) to re-bind the final owner reference securely.
-
----
-
-## 📂 Project Structure
-
-```
-java-banking/
-├── pom.xml
-├── data/
-│   ├── users.csv
-│   ├── accounts.csv
-│   └── transactions.csv
-└── src/
-    ├── main/
-    │   ├── java/
-    │   │   └── com/
-    │   │       └── javabank/
-    │   │           ├── Main.java
-    │   │           ├── model/
-    │   │           │   ├── Account.java
-    │   │           │   ├── SavingsAccount.java
-    │   │           │   ├── CurrentAccount.java
-    │   │           │   ├── User.java
-    │   │           │   ├── Transaction.java
-    │   │           │   └── ... (Enums, Status)
-    │   │           ├── repository/
-    │   │           │   ├── Repository.java
-    │   │           │   ├── InMemoryRepository.java
-    │   │           │   ├── FilePersistenceService.java
-    │   │           │   └── ... (Sub-interfaces)
-    │   │           ├── service/
-    │   │           │   ├── BankService.java
-    │   │           │   └── BankServiceImpl.java
-    │   │           ├── transaction/
-    │   │           │   ├── TransactionProcessor.java
-    │   │           │   ├── DepositProcessor.java
-    │   │           │   └── ... (Withdrawal, Transfer)
-    │   │           ├── analytics/
-    │   │           │   ├── AnalyticsService.java
-    │   │           │   └── AnalyticsServiceImpl.java
-    │   │           ├── exception/
-    │   │           │   └── ... (Custom exceptions)
-    │   │           ├── util/
-    │   │           │   └── ... (Formatters, ID generators)
-    │   │           └── ui/
-    │   │               └── BankingApp.java
-    │   └── resources/
-    │       └── styles.css
-    └── test/
-        └── java/
-            └── com/
-                └── javabank/
-                    └── BankingServiceTest.java
-```
-
----
-
-## 🖥️ Screenshots (Placeholders)
-
-*Coming soon - visual assets of the client dashboard:*
-
-| Login Screen | Dashboard & Charts |
-|:---:|:---:|
-| `[Screenshot Placeholder: Login Panel]` | `[Screenshot Placeholder: Dashboard view]` |
-
-| Audit Logs & Filters | Account Snapshots |
-|:---:|:---:|
-| `[Screenshot Placeholder: Transaction History Table]` | `[Screenshot Placeholder: Copyable Snapshot comparison]` |
-
----
-
-## ⚙️ How to Build and Run
-
-### Prerequisites
-1. Install **Java Development Kit (JDK) 17** or higher.
-2. Install **Apache Maven 3.8+**.
-
-### Compilation & Unit Testing
-To compile source code and execute all JUnit 5 test cases, run:
-```bash
-mvn clean test
-```
-
-### Launching the JavaFX Application
-To boot the desktop application client, run the Maven exec goal:
-```bash
-mvn javafx:run
-```
-
----
-
-## 📈 Learning Outcomes & Portfolio Highlights
-
-Developing JavaBank yielded several critical backend design insights:
-* **Decoupling presentation from logic**: Designing the application as a strict service-facade pattern ensures that the business layer remains testable and reusable, even if migrating to a web client (e.g. Spring Boot or JAX-RS).
-* **Avoiding Cloneable pitfalls**: Learned why `Cloneable` fails to deep-copy graph structures when `final` fields are present, and how to safely implement custom copy constructors.
-* **Stream Optimization**: Discovered the heap performance benefits of primitive streams (`DoubleStream` / `mapToDouble`) over boxed wrapper object reductions.
-* **Concurrency Safety**: Gained experience protecting in-memory collection nodes (`ArrayList`) in multithreaded platforms by synchronizing critical registration methods.
+* **Abstraction & Inheritance**: Polymorphic account behaviors in `SavingsAccount` (non-negative balances) and `CurrentAccount` (overdraft protection).
+* **Generic Repository Pattern**: Generic CRUD interface `Repository<T, ID>` implemented with `ConcurrentHashMap` for thread-safe $O(1)$ operations.
+* **Domain Exception Boundaries**: Custom checked exceptions (`BankException`, `InsufficientBalanceException`, `AccountNotFoundException`) mapped to REST status codes.
+* **Functional Programming & Stream API**: Primitive mapping streams (`mapToDouble().sum()`) avoiding autoboxing overhead during financial aggregations.
+* **Deep Copying & Cyclic Graphs**: Custom copy constructors in `User` and `Account` preventing reference cycle memory leaks.
+* **Cloud Containerization**: Multi-stage Docker packaging with minimal JRE runtime and dynamic `$PORT` binding.
